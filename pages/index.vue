@@ -1,6 +1,7 @@
 <template>
   <div class="container">
-    <h1>Создайте свой уникальный шаблон из блоков</h1>
+    <h1 class="title">Создайте свой уникальный шаблон из блоков</h1>
+    <b-button type="is-primary" icon-left="plus">Добавить новый блок</b-button>
   </div>
 </template>
 
@@ -12,6 +13,10 @@ export default Vue.extend({})
 
 <style lang="scss" scoped>
 .container {
-  color: green;
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 </style>

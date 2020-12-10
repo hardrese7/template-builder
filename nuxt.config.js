@@ -37,6 +37,7 @@ export default {
   modules: [
     // https://go.nuxtjs.dev/pwa
     '@nuxtjs/pwa',
+    'nuxt-buefy',
   ],
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
