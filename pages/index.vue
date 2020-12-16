@@ -84,15 +84,14 @@ export default class Home extends Vue {
   width: 100%;
 }
 .block {
-  $border-settings: 2px dashed;
   $parent: &;
 
   margin-bottom: 0;
-  border: $border-settings transparent;
+  border: 2px dashed transparent;
   position: relative;
   display: flex;
   &:hover {
-    border: $border-settings #929292; // TODO move to variable
+    border-color: #929292; // TODO move to variable
     #{$parent}__btns {
       visibility: visible;
     }
