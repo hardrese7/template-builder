@@ -10,7 +10,12 @@
         @input="setTextDraft"
       ></b-input>
     </b-field>
-    <b-button type="is-success" icon-left="plus" @click.prevent="addTextBlock">
+    <b-button
+      :disabled="!textDraft"
+      type="is-success"
+      icon-left="plus"
+      @click.prevent="addTextBlock"
+    >
       Сохранить
     </b-button>
     <b-button type="is-danger" icon-left="close">Закрыть</b-button>

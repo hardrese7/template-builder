@@ -5,9 +5,13 @@ enum BlockType {
   Text,
 }
 
-interface Block {
-  type: BlockType
+interface BlockData {
+  id: number
   data: string
+}
+
+interface Block extends BlockData {
+  type: BlockType
 }
 
 const types = {
@@ -23,6 +27,9 @@ const types = {
 export default class Blocks extends VuexModule {
   textDraft: string = ''
   blocks: Block[] = []
+  get nextBlockId() {
+    return Math.max(...this.blocks.map((b) => b.id), -1) + 1
+  }
 
   @Action
   setTextDraft(textDraft: string) {
@@ -31,7 +38,10 @@ export default class Blocks extends VuexModule {
 
   @Action
   convertDraftToTextBlock() {
-    this.context.commit(types.ADD_TEXT_BLOCK, this.textDraft)
+    this.context.commit(types.ADD_TEXT_BLOCK, {
+      data: this.textDraft,
+      id: this.nextBlockId,
+    })
     this.context.commit(types.SET_TEXT_DRAFT, '')
   }
 
@@ -41,10 +51,11 @@ export default class Blocks extends VuexModule {
   }
 
   @Mutation
-  [types.ADD_TEXT_BLOCK](text: string) {
+  [types.ADD_TEXT_BLOCK]({ data, id }: BlockData) {
     this.blocks.push({
+      id,
+      data,
       type: BlockType.Text,
-      data: text,
     })
   }
 }
