@@ -4,7 +4,6 @@
       <b-field>
         <b-input
           placeholder="Введите текст"
-          maxlength="200"
           type="textarea"
           :value="textDraft"
           @input="setTextDraft"
