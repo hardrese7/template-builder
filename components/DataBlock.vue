@@ -2,14 +2,12 @@
   <div class="block">
     <b-image
       v-if="block.type === BlockType.Image"
-      class="block__data"
       :src="`https://picsum.photos/id/${block.data}/300/200.webp`"
       webp-fallback=".jpg"
     />
-    <div v-else class="block__data">{{ block.data }}</div>
-    <div class="block__btns">
+    <div v-else class="text">{{ block.data }}</div>
+    <div v-show="!dragInProgress" class="btns">
       <b-button type="is-info" icon-right="pencil" />
-      &nbsp;
       <b-button
         type="is-danger"
         icon-right="delete"
@@ -28,6 +26,7 @@ import { BlockType, Block } from '@/models/block'
 @Component
 export default class extends Vue {
   @Prop({ type: Object, required: true }) readonly block!: Block
+  @Prop({ type: Boolean }) readonly dragInProgress!: boolean
 
   readonly BlockType = BlockType
   blocksStore = getModule(blocks, this.$store)
@@ -49,31 +48,26 @@ export default class extends Vue {
 </script>
 
 <style scoped lang="scss">
+.btns {
+  position: absolute;
+  visibility: hidden;
+}
 .block {
-  $parent: &;
-
   margin-bottom: 0;
   border: 2px dashed transparent;
   position: relative;
   display: flex;
   &:hover {
-    border-color: #929292; // TODO move to variable
-    #{$parent}__btns {
+    .btns {
       visibility: visible;
     }
   }
-  &__data {
-    white-space: pre-wrap;
-  }
-  &__btns {
-    background: #1d1d1db2; // TODO move to variable
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    visibility: hidden;
-  }
+}
+.data {
+  white-space: pre-wrap;
+}
+.ghost {
+  opacity: 0.5;
+  border-color: #929292; // TODO move to variable
 }
 </style>

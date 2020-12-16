@@ -16,13 +16,24 @@
       Создайте свой уникальный шаблон из блоков
     </h1>
     <div v-else class="blocks">
-      <draggable v-model="blocks">
-        <data-block
-          v-for="block in blocks"
-          :key="block.id"
-          class="draggable"
-          :block="block"
-        />
+      <draggable
+        v-model="blocks"
+        v-bind="dragOptions"
+        @start="dragInProgress = true"
+        @end="dragInProgress = false"
+      >
+        <transition-group
+          type="transition"
+          :name="!dragInProgress ? 'flip-list' : null"
+        >
+          <data-block
+            v-for="block in blocks"
+            :key="block.id"
+            class="draggable"
+            :block="block"
+            :drag-in-progress="dragInProgress"
+          />
+        </transition-group>
       </draggable>
     </div>
   </div>
@@ -40,6 +51,16 @@ import DataBlock from '@/components/DataBlock.vue'
 })
 export default class Home extends Vue {
   blocksStore = getModule(blocks, this.$store)
+  dragInProgress = false
+
+  get dragOptions() {
+    return {
+      animation: 200,
+      group: 'blocks',
+      disabled: false,
+      ghostClass: 'ghost',
+    }
+  }
 
   set blocks(blocks) {
     this.blocksStore.setBlocks(blocks)
@@ -75,5 +96,12 @@ export default class Home extends Vue {
 }
 .draggable {
   cursor: move;
+}
+
+.flip-list-move {
+  transition: transform 0.5s;
+}
+.no-move {
+  transition: transform 0s;
 }
 </style>
