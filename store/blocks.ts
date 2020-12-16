@@ -17,6 +17,7 @@ interface Block extends BlockData {
 const types = {
   ADD_TEXT_BLOCK: 'ADD_TEXT_BLOCK',
   SET_TEXT_DRAFT: 'SET_TEXT_DRAFT',
+  DELETE_BLOCK: 'DELETE_BLOCK',
 }
 
 @Module({
@@ -37,6 +38,11 @@ export default class Blocks extends VuexModule {
   }
 
   @Action
+  deleteBlock(blockId: number) {
+    this.context.commit(types.DELETE_BLOCK, blockId)
+  }
+
+  @Action
   convertDraftToTextBlock() {
     this.context.commit(types.ADD_TEXT_BLOCK, {
       data: this.textDraft,
@@ -48,6 +54,11 @@ export default class Blocks extends VuexModule {
   @Mutation
   [types.SET_TEXT_DRAFT](textDraft: string) {
     this.textDraft = textDraft
+  }
+
+  @Mutation
+  [types.DELETE_BLOCK](blockId: number) {
+    this.blocks = this.blocks.filter((b) => b.id !== blockId)
   }
 
   @Mutation

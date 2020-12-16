@@ -17,7 +17,18 @@
     </h1>
     <div v-else class="blocks">
       <!-- eslint-disable-next-line prettier/prettier -->
-      <div v-for="block in blocks" :key="block.id" class="blocks__item">{{ block.data }}</div>
+      <div v-for="block in blocks" :key="block.id" class="block">
+        <div class="block__data">{{ block.data }}</div>
+        <div class="block__btns">
+          <b-button type="is-info" icon-right="pencil" />
+          &nbsp;
+          <b-button
+            type="is-danger"
+            icon-right="delete"
+            @click="confirmDeleteBlock(block.id)"
+          />
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -30,6 +41,19 @@ import blocks from '@/store/blocks'
 @Component
 export default class Home extends Vue {
   blocksStore = getModule(blocks, this.$store)
+  confirmDeleteBlock(blockId: number) {
+    this.$buefy.dialog.confirm({
+      message: 'Вы уверены, что хотите удалить этот блок?',
+      onConfirm: () => {
+        this.deleteBlock(blockId)
+        this.$buefy.toast.open('Блок удалён')
+      },
+    })
+  }
+
+  deleteBlock(blockId: number) {
+    this.blocksStore.deleteBlock(blockId)
+  }
 
   get blocks() {
     return this.blocksStore.blocks
@@ -53,18 +77,38 @@ export default class Home extends Vue {
   margin-top: 10px;
   margin-bottom: 10px;
   align-self: flex-end;
+  z-index: 2;
 }
 .blocks {
   height: 100%;
   width: 100%;
-  &__item {
-    $border-settings: 2px dashed;
+}
+.block {
+  $border-settings: 2px dashed;
+  $parent: &;
 
-    white-space: pre-wrap;
-    border: $border-settings transparent;
-    &:hover {
-      border: $border-settings #929292;
+  margin-bottom: 0;
+  border: $border-settings transparent;
+  position: relative;
+  display: flex;
+  &:hover {
+    border: $border-settings #929292; // TODO move to variable
+    #{$parent}__btns {
+      visibility: visible;
     }
+  }
+  &__data {
+    white-space: pre-wrap;
+  }
+  &__btns {
+    background: #1d1d1db2; // TODO move to variable
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    visibility: hidden;
   }
 }
 </style>
