@@ -2,6 +2,7 @@ import { Module, VuexModule, Mutation, Action } from 'vuex-module-decorators'
 import { BlockType, BlockData, Block } from '@/models/block'
 
 const types = {
+  SET_BLOCKS: 'SET_BLOCKS',
   ADD_IMAGE_BLOCK: 'ADD_IMAGE_BLOCK',
   ADD_TEXT_BLOCK: 'ADD_TEXT_BLOCK',
   SET_TEXT_DRAFT: 'SET_TEXT_DRAFT',
@@ -18,6 +19,11 @@ export default class Blocks extends VuexModule {
   blocks: Block[] = []
   get nextBlockId() {
     return Math.max(...this.blocks.map((b) => b.id), -1) + 1
+  }
+
+  @Action
+  setBlocks(blocks: Block[]) {
+    this.context.commit(types.SET_BLOCKS, blocks)
   }
 
   @Action
@@ -45,6 +51,11 @@ export default class Blocks extends VuexModule {
       id: this.nextBlockId,
     })
     this.context.commit(types.SET_TEXT_DRAFT, '')
+  }
+
+  @Mutation
+  [types.SET_BLOCKS](blocks: Block[]) {
+    this.blocks = blocks
   }
 
   @Mutation
