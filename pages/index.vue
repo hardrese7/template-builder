@@ -16,9 +16,15 @@
       Создайте свой уникальный шаблон из блоков
     </h1>
     <div v-else class="blocks">
-      <!-- eslint-disable-next-line prettier/prettier -->
       <div v-for="block in blocks" :key="block.id" class="block">
-        <div class="block__data">{{ block.data }}</div>
+        <!-- eslint-disable-next-line prettier/prettier -->
+        <div v-if="block.type === BlockType.Text" class="block__data">{{ block.data }}</div>
+        <b-image
+          v-else
+          class="block__data"
+          :src="`https://picsum.photos/id/${block.data}/300/200.webp`"
+          webp-fallback=".jpg"
+        />
         <div class="block__btns">
           <b-button type="is-info" icon-right="pencil" />
           &nbsp;
@@ -37,9 +43,11 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { getModule } from 'vuex-module-decorators'
 import blocks from '@/store/blocks'
+import { BlockType } from '@/models/block'
 
 @Component
 export default class Home extends Vue {
+  BlockType = BlockType
   blocksStore = getModule(blocks, this.$store)
   confirmDeleteBlock(blockId: number) {
     this.$buefy.dialog.confirm({

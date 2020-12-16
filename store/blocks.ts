@@ -1,20 +1,8 @@
 import { Module, VuexModule, Mutation, Action } from 'vuex-module-decorators'
-
-enum BlockType {
-  Image,
-  Text,
-}
-
-interface BlockData {
-  id: number
-  data: string
-}
-
-interface Block extends BlockData {
-  type: BlockType
-}
+import { BlockType, BlockData, Block } from '@/models/block'
 
 const types = {
+  ADD_IMAGE_BLOCK: 'ADD_IMAGE_BLOCK',
   ADD_TEXT_BLOCK: 'ADD_TEXT_BLOCK',
   SET_TEXT_DRAFT: 'SET_TEXT_DRAFT',
   DELETE_BLOCK: 'DELETE_BLOCK',
@@ -43,12 +31,29 @@ export default class Blocks extends VuexModule {
   }
 
   @Action
+  addImageBlock(imageId: number) {
+    this.context.commit(types.ADD_IMAGE_BLOCK, {
+      data: imageId,
+      id: this.nextBlockId,
+    })
+  }
+
+  @Action
   convertDraftToTextBlock() {
     this.context.commit(types.ADD_TEXT_BLOCK, {
       data: this.textDraft,
       id: this.nextBlockId,
     })
     this.context.commit(types.SET_TEXT_DRAFT, '')
+  }
+
+  @Mutation
+  [types.ADD_IMAGE_BLOCK]({ data, id }: BlockData) {
+    this.blocks.push({
+      id,
+      data,
+      type: BlockType.Image,
+    })
   }
 
   @Mutation
