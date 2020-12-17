@@ -15,8 +15,8 @@
 <style scoped lang="scss">
 .add-new-block {
   position: sticky;
-  margin-bottom: 10px;
   align-self: flex-end;
+  bottom: 10px;
   z-index: 2;
 }
 </style>

@@ -1,8 +1,8 @@
 <template>
   <div class="container">
-    <add-block-menu />
     <blocks-list v-if="hasBlocks" @showBlockOptions="showBlockOptions" />
     <h1 v-else class="title">Создайте свой уникальный шаблон из блоков</h1>
+    <add-block-menu />
     <block-options-modal
       v-if="selectedBlock"
       v-model="blockOptionsIsOpen"
@@ -50,10 +50,9 @@ export default class Home extends Vue {
 <style lang="scss" scoped>
 .container {
   display: flex;
-  height: 100%;
+  min-height: 100%;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
   padding: 10px;
 }
 .title {
