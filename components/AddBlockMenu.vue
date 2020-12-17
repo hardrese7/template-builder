@@ -6,7 +6,7 @@
     <b-dropdown-item has-link icon-left="plus">
       <nuxt-link to="/add-block/text">Текст</nuxt-link>
     </b-dropdown-item>
-    <b-dropdown-item>
+    <b-dropdown-item has-link>
       <nuxt-link to="/add-block/image">Изображение</nuxt-link>
     </b-dropdown-item>
   </b-dropdown>
