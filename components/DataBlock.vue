@@ -4,6 +4,7 @@
       v-if="block.type === BlockType.Image"
       :src="`https://picsum.photos/id/${block.data}/300/200.webp`"
       webp-fallback=".jpg"
+      class="image"
     />
     <div v-else class="text">{{ block.data }}</div>
   </div>
@@ -42,5 +43,8 @@ export default class extends Vue {
 }
 .ghost {
   opacity: 0.5;
+}
+.image {
+  pointer-events: none;
 }
 </style>
