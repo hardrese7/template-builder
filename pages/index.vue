@@ -52,10 +52,11 @@ export default class Home extends Vue {
   display: flex;
   min-height: 100%;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
   padding: 10px;
 }
 .title {
   font-size: 10vw;
+  margin: auto;
 }
 </style>
