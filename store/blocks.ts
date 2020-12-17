@@ -44,7 +44,7 @@ export default class Blocks extends VuexModule {
   }
 
   @Action
-  addImageBlock(imageId: number) {
+  addImageBlock(imageId: string) {
     // TODO refactor — use one mutation for all block types
     this.context.commit(types.ADD_IMAGE_BLOCK, {
       data: imageId,

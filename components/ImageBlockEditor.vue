@@ -38,7 +38,7 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import { getModule } from 'vuex-module-decorators'
-import {Block} from '@/models/block'
+import { Block } from '@/models/block'
 import blocks from '@/store/blocks'
 
 @Component
@@ -53,7 +53,7 @@ export default class ImageEditor extends Vue {
       return
     }
     const id = +this.$route.params.id
-    this.blockForEdit = this.blocksStore.blocks.find(b => b.id === id)
+    this.blockForEdit = this.blocksStore.blocks.find((b) => b.id === id)
     if (!this.blockForEdit) {
       this.$router.push('/404')
       return
@@ -61,15 +61,14 @@ export default class ImageEditor extends Vue {
     this.selectedImageId = +this.blockForEdit.data
   }
 
-  setTextDraft(textDraft: string) {
-    this.blocksStore.setTextDraft(textDraft)
-  }
-
   saveImageBlock() {
     if (this.blockForEdit) {
-      this.blocksStore.updateBlockData({id: this.blockForEdit.id, data: this.selectedImageId!.toString()})
+      this.blocksStore.updateBlockData({
+        id: this.blockForEdit.id,
+        data: this.selectedImageId!.toString(),
+      })
     } else {
-      this.blocksStore.addImageBlock(<number>this.selectedImageId)
+      this.blocksStore.addImageBlock(this.selectedImageId!.toString())
     }
     this.$router.push('/')
   }

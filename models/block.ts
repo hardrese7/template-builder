@@ -5,7 +5,7 @@ export enum BlockType {
 
 export interface BlockData {
   readonly id: number
-  data: string | number
+  data: string
 }
 
 export interface Block extends BlockData {
