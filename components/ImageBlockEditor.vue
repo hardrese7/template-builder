@@ -23,7 +23,7 @@
       <b-button
         :disabled="imageIsNotSelected"
         type="is-success"
-        icon-left="plus"
+        icon-left="content-save"
         @click.prevent="saveImageBlock"
       >
         Сохранить
@@ -44,11 +44,16 @@ import blocks from '@/store/blocks'
 @Component
 export default class ImageEditor extends Vue {
   blocksStore = getModule(blocks, this.$store)
-  imagesIds = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] // TODO implement api call
   selectedImageId: number | null = null
   blockForEdit: Block | undefined
 
-  initEditor() {
+  async initEditor() {
+    // TODO add pagination for images
+    // TODO add spinner
+    // TODO update images on every page mount, and don't forget it's possible to lose the current image
+    if (!this.imagesIds.length) {
+      await this.blocksStore.loadImagesList()
+    }
     if (!this.$route.params.id) {
       return
     }
@@ -77,8 +82,8 @@ export default class ImageEditor extends Vue {
     this.initEditor()
   }
 
-  get textDraft() {
-    return this.blocksStore.textDraft
+  get imagesIds() {
+    return this.blocksStore.imagesIds
   }
 
   get imageIsNotSelected() {

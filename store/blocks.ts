@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import { Module, VuexModule, Mutation, Action } from 'vuex-module-decorators'
 import { BlockType, BlockData, Block } from '@/models/block'
+import { getImages } from '@/utils/apiService.ts'
 
 const types = {
   SET_BLOCKS: 'SET_BLOCKS',
@@ -9,6 +10,7 @@ const types = {
   SET_TEXT_DRAFT: 'SET_TEXT_DRAFT',
   DELETE_BLOCK: 'DELETE_BLOCK',
   UPDATE_BLOCK_DATA: 'UPDATE_BLOCK_DATA',
+  SET_IMAGES_IDS: 'SET_IMAGES_IDS',
 }
 
 @Module({
@@ -19,8 +21,15 @@ const types = {
 export default class Blocks extends VuexModule {
   textDraft: string = ''
   blocks: Block[] = []
+  imagesIds: number[] = []
   get nextBlockId() {
     return Math.max(...this.blocks.map((b) => b.id), -1) + 1
+  }
+
+  @Action({ commit: 'SET_IMAGES_IDS' }) // TODO use it in other commits
+  async loadImagesList() {
+    const images: { id: number }[] = await getImages()
+    return images.map((i) => i.id)
   }
 
   @Action
@@ -59,6 +68,11 @@ export default class Blocks extends VuexModule {
       id: this.nextBlockId,
     })
     this.context.commit(types.SET_TEXT_DRAFT, '')
+  }
+
+  @Mutation
+  [types.SET_IMAGES_IDS](imagesIds: number[]) {
+    this.imagesIds = imagesIds
   }
 
   @Mutation
