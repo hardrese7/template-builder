@@ -1,41 +1,13 @@
 <template>
   <div class="container">
-    <b-dropdown class="add-new-block">
-      <b-button slot="trigger" type="is-primary" icon-left="plus"
-        >Добавить новый блок</b-button
-      >
-
-      <b-dropdown-item has-link icon-left="plus">
-        <nuxt-link to="/add-block/text">Текст</nuxt-link>
-      </b-dropdown-item>
-      <b-dropdown-item>
-        <nuxt-link to="/add-block/image">Изображение</nuxt-link>
-      </b-dropdown-item>
-    </b-dropdown>
-    <h1 v-if="!blocks.length" class="title">
-      Создайте свой уникальный шаблон из блоков
-    </h1>
-    <div v-else class="blocks">
-      <draggable
-        v-model="blocks"
-        v-bind="dragOptions"
-        @start="dragInProgress = true"
-        @end="dragInProgress = false"
-      >
-        <transition-group
-          type="transition"
-          :name="!dragInProgress ? 'flip-list' : null"
-        >
-          <data-block
-            v-for="block in blocks"
-            :key="block.id"
-            class="draggable"
-            :block="block"
-            :drag-in-progress="dragInProgress"
-          />
-        </transition-group>
-      </draggable>
-    </div>
+    <add-block-menu />
+    <blocks-list v-if="hasBlocks" @showBlockOptions="showBlockOptions" />
+    <h1 v-else class="title">Создайте свой уникальный шаблон из блоков</h1>
+    <block-options-modal
+      v-if="selectedBlock"
+      v-model="blockOptionsIsOpen"
+      :block="selectedBlock"
+    />
   </div>
 </template>
 
@@ -43,31 +15,34 @@
 import draggable from 'vuedraggable'
 import { Component, Vue } from 'vue-property-decorator'
 import { getModule } from 'vuex-module-decorators'
-import blocks from '@/store/blocks'
+import { Block } from '@/models/block'
 import DataBlock from '@/components/DataBlock.vue'
+import BlockOptionsModal from '@/components/BlockOptionsModal.vue'
+import AddBlockMenu from '@/components/AddBlockMenu.vue'
+import BlocksList from '@/components/BlocksList.vue'
+import blocks from '@/store/blocks'
 
 @Component({
-  components: { draggable, DataBlock },
+  components: {
+    draggable,
+    DataBlock,
+    BlockOptionsModal,
+    AddBlockMenu,
+    BlocksList,
+  },
 })
 export default class Home extends Vue {
   blocksStore = getModule(blocks, this.$store)
-  dragInProgress = false
+  blockOptionsIsOpen = false
+  selectedBlock: Block | null = null
 
-  get dragOptions() {
-    return {
-      animation: 200,
-      group: 'blocks',
-      disabled: false,
-      ghostClass: 'ghost',
-    }
+  get hasBlocks() {
+    return !!this.blocksStore.blocks.length
   }
 
-  set blocks(blocks) {
-    this.blocksStore.setBlocks(blocks)
-  }
-
-  get blocks() {
-    return this.blocksStore.blocks
+  showBlockOptions(block: Block) {
+    this.blockOptionsIsOpen = true
+    this.selectedBlock = block
   }
 }
 </script>
@@ -79,29 +54,9 @@ export default class Home extends Vue {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  padding: 10px;
 }
 .title {
   font-size: 10vw;
-}
-.add-new-block {
-  position: sticky;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  align-self: flex-end;
-  z-index: 2;
-}
-.blocks {
-  height: 100%;
-  width: 100%;
-}
-.draggable {
-  cursor: move;
-}
-
-.flip-list-move {
-  transition: transform 0.5s;
-}
-.no-move {
-  transition: transform 0s;
 }
 </style>

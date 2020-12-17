@@ -6,14 +6,6 @@
       webp-fallback=".jpg"
     />
     <div v-else class="text">{{ block.data }}</div>
-    <div v-show="!dragInProgress" class="btns">
-      <b-button type="is-info" icon-right="pencil" />
-      <b-button
-        type="is-danger"
-        icon-right="delete"
-        @click="confirmDeleteBlock(block.id)"
-      />
-    </div>
   </div>
 </template>
 
@@ -30,44 +22,25 @@ export default class extends Vue {
 
   readonly BlockType = BlockType
   blocksStore = getModule(blocks, this.$store)
-
-  confirmDeleteBlock(blockId: number) {
-    this.$buefy.dialog.confirm({
-      message: 'Вы уверены, что хотите удалить этот блок?',
-      onConfirm: () => {
-        this.deleteBlock(blockId)
-        this.$buefy.toast.open('Блок удалён')
-      },
-    })
-  }
-
-  deleteBlock(blockId: number) {
-    this.blocksStore.deleteBlock(blockId)
-  }
 }
 </script>
 
 <style scoped lang="scss">
-.btns {
-  position: absolute;
-  visibility: hidden;
-}
 .block {
+  padding: 5px;
   margin-bottom: 0;
-  border: 2px dashed transparent;
   position: relative;
   display: flex;
-  &:hover {
-    .btns {
-      visibility: visible;
-    }
-  }
+  justify-content: space-between;
 }
-.data {
+.btns {
+  display: flex;
+  flex-direction: column;
+}
+.text {
   white-space: pre-wrap;
 }
 .ghost {
   opacity: 0.5;
-  border-color: #929292; // TODO move to variable
 }
 </style>
