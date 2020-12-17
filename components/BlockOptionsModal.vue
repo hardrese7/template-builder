@@ -9,7 +9,13 @@
         <data-block :block="block" />
       </section>
       <footer class="modal-card-foot">
-        <b-button type="is-info" icon-right="pencil">Редактировать</b-button>
+        <b-button
+          tag="nuxt-link"
+          :to="urlOfEditPage"
+          type="is-info"
+          icon-right="pencil"
+          >Редактировать</b-button
+        >
         <b-button
           type="is-danger"
           icon-right="delete"
@@ -22,14 +28,14 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator'
+import { Component, Vue, Prop, VModel } from 'vue-property-decorator'
 import { getModule } from 'vuex-module-decorators'
 import blocks from '@/store/blocks'
-import { Block } from '@/models/block'
+import { Block, BlockType } from '@/models/block'
 
 @Component
 export default class extends Vue {
-  @Prop({ type: Boolean }) readonly value!: Boolean
+  @VModel({ type: Boolean }) modalIsOpen!: boolean
   @Prop({ type: Object, required: true }) readonly block!: Block
 
   blocksStore = getModule(blocks, this.$store)
@@ -53,12 +59,15 @@ export default class extends Vue {
     this.closeModal()
   }
 
-  set modalIsOpen(value) {
-    this.$emit('input', value)
-  }
-
-  get modalIsOpen() {
-    return this.value
+  get urlOfEditPage() {
+    if (this.block.type === BlockType.Image) {
+      return `/edit-block/image/${this.block.id}`
+    }
+    if (this.block.type === BlockType.Text) {
+      return `/edit-block/text/${this.block.id}`
+    }
+    // TODO log error
+    return ''
   }
 }
 </script>

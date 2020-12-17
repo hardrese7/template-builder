@@ -4,7 +4,7 @@ export enum BlockType {
 }
 
 export interface BlockData {
-  id: number
+  readonly id: number
   data: string | number
 }
 

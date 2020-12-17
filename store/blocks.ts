@@ -1,3 +1,4 @@
+import Vue from 'vue'
 import { Module, VuexModule, Mutation, Action } from 'vuex-module-decorators'
 import { BlockType, BlockData, Block } from '@/models/block'
 
@@ -7,6 +8,7 @@ const types = {
   ADD_TEXT_BLOCK: 'ADD_TEXT_BLOCK',
   SET_TEXT_DRAFT: 'SET_TEXT_DRAFT',
   DELETE_BLOCK: 'DELETE_BLOCK',
+  UPDATE_BLOCK_DATA: 'UPDATE_BLOCK_DATA',
 }
 
 @Module({
@@ -37,7 +39,13 @@ export default class Blocks extends VuexModule {
   }
 
   @Action
+  updateBlockData(blockData: BlockData) {
+    this.context.commit(types.UPDATE_BLOCK_DATA, blockData)
+  }
+
+  @Action
   addImageBlock(imageId: number) {
+    // TODO refactor — use one mutation for all block types
     this.context.commit(types.ADD_IMAGE_BLOCK, {
       data: imageId,
       id: this.nextBlockId,
@@ -75,6 +83,12 @@ export default class Blocks extends VuexModule {
   @Mutation
   [types.DELETE_BLOCK](blockId: number) {
     this.blocks = this.blocks.filter((b) => b.id !== blockId)
+  }
+
+  @Mutation
+  [types.UPDATE_BLOCK_DATA]({ id, data }: BlockData) {
+    const blockIndex = this.blocks.findIndex((b) => b.id === id)
+    Vue.set(this.blocks[blockIndex], 'data', data)
   }
 
   @Mutation
