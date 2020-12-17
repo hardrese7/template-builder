@@ -1,26 +1,13 @@
 <template>
-  <section class="container">
-    <form class="form">
-      <b-field>
-        <b-input
-          placeholder="Введите текст"
-          type="textarea"
-          :value="textDraft"
-          @input="setTextDraft"
-        ></b-input>
-      </b-field>
-      <b-button
-        :disabled="!textDraft"
-        type="is-success"
-        icon-left="plus"
-        @click.prevent="saveTextBlock"
-      >
-        Сохранить
-      </b-button>
-      <b-button tag="nuxt-link" icon-left="close" to="/" type="is-danger">
-        Закрыть
-      </b-button>
-    </form>
+  <section class="form">
+    <b-field>
+      <b-input
+        placeholder="Введите текст"
+        type="textarea"
+        :value="textDraft"
+        @input="setTextDraft"
+      ></b-input>
+    </b-field>
   </section>
 </template>
 
@@ -28,9 +15,12 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { getModule } from 'vuex-module-decorators'
 import { Block } from '@/models/block'
+import events from '@/models/events'
 import blocks from '@/store/blocks'
 
-@Component
+@Component({
+  layout: 'editor',
+})
 export default class TextBlockEditor extends Vue {
   blocksStore = getModule(blocks, this.$store)
   setTextDraft(textDraft: string) {
@@ -65,8 +55,22 @@ export default class TextBlockEditor extends Vue {
     this.$router.push('/')
   }
 
+  tryToSaveImageBlock() {
+    if (!this.textDraft) {
+      // TODO show error
+      return
+    }
+    this.saveTextBlock()
+  }
+
   created() {
     this.initEditor()
+    this.$nuxt.$emit(events.SET_HEADER, 'Введите текст')
+    this.$nuxt.$on(events.SAVE_EDITOR, this.tryToSaveImageBlock)
+  }
+
+  beforeDestroy() {
+    this.$nuxt.$off(events.SAVE_EDITOR, this.tryToSaveImageBlock)
   }
 
   get textDraft() {
@@ -76,11 +80,6 @@ export default class TextBlockEditor extends Vue {
 </script>
 
 <style scoped lang="scss">
-.container {
-  height: 100%;
-  display: flex;
-  align-items: center;
-}
 .form {
   flex: 1;
 }

@@ -1,37 +1,21 @@
 <template>
-  <section class="container">
-    <form class="form">
-      <h1 class="title">Выберите изображение</h1>
-      <section class="images">
-        <div v-for="imageId in imagesIds" :key="imageId">
-          <input
-            :id="`image${imageId}`"
-            v-model="selectedImageId"
-            class="input"
-            type="radio"
-            name="image"
-            :value="imageId"
-          />
-          <label class="image" :for="`image${imageId}`">
-            <b-image
-              :src="`https://picsum.photos/id/${imageId}/200/200.webp`"
-              webp-fallback=".jpg"
-            />
-          </label>
-        </div>
-      </section>
-      <b-button
-        :disabled="imageIsNotSelected"
-        type="is-success"
-        icon-left="content-save"
-        @click.prevent="saveImageBlock"
-      >
-        Сохранить
-      </b-button>
-      <b-button tag="nuxt-link" icon-left="close" to="/" type="is-danger">
-        Закрыть
-      </b-button>
-    </form>
+  <section class="images">
+    <div v-for="imageId in imagesIds" :key="imageId">
+      <input
+        :id="`image${imageId}`"
+        v-model="selectedImageId"
+        class="input"
+        type="radio"
+        name="image"
+        :value="imageId"
+      />
+      <label class="image" :for="`image${imageId}`">
+        <b-image
+          :src="`https://picsum.photos/id/${imageId}/200/200.webp`"
+          webp-fallback=".jpg"
+        />
+      </label>
+    </div>
   </section>
 </template>
 
@@ -39,9 +23,12 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { getModule } from 'vuex-module-decorators'
 import { Block } from '@/models/block'
+import events from '@/models/events'
 import blocks from '@/store/blocks'
 
-@Component
+@Component({
+  layout: 'editor',
+})
 export default class ImageEditor extends Vue {
   blocksStore = getModule(blocks, this.$store)
   selectedImageId: number | null = null
@@ -78,8 +65,22 @@ export default class ImageEditor extends Vue {
     this.$router.push('/')
   }
 
+  tryToSaveImageBlock() {
+    if (this.imageIsNotSelected) {
+      // TODO show error
+      return
+    }
+    this.saveImageBlock()
+  }
+
   created() {
     this.initEditor()
+    this.$nuxt.$emit(events.SET_HEADER, 'Выберите изображение')
+    this.$nuxt.$on(events.SAVE_EDITOR, this.tryToSaveImageBlock)
+  }
+
+  beforeDestroy() {
+    this.$nuxt.$off(events.SAVE_EDITOR, this.tryToSaveImageBlock)
   }
 
   get imagesIds() {
@@ -87,27 +88,16 @@ export default class ImageEditor extends Vue {
   }
 
   get imageIsNotSelected() {
-    return Number.isNaN(this.selectedImageId)
+    return this.selectedImageId === null
   }
 }
 </script>
 
 <style scoped lang="scss">
-.container {
-  height: 100%;
-  display: flex;
-  align-items: center;
-}
-.form {
+.images {
   flex: 1;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.images {
-  display: flex;
   flex-wrap: wrap;
-  margin-bottom: 1.5rem;
 }
 
 .image {
