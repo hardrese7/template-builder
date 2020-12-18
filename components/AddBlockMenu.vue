@@ -1,5 +1,5 @@
 <template>
-  <b-dropdown class="add-new-block">
+  <b-dropdown position="is-top-left" class="add-new-block">
     <b-button slot="trigger" type="is-primary" icon-left="plus"
       >Добавить новый блок</b-button
     >
